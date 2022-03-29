@@ -14,6 +14,9 @@ namespace LibFoster.Modules
         /// <inheritdoc />
         public override string EncryptionName => "aes";
 
+        /// <inheritdoc/>
+        public override bool RequiresPassword => true;
+
         /// <inheritdoc />
         public override Stream GenerateEncryptStream(Stream inStream, byte[] arguments, byte[] password)
         {
@@ -88,6 +91,23 @@ namespace LibFoster.Modules
             }
             var encryptor = aes.CreateEncryptor();
             return new CryptoStream(inStream, encryptor, CryptoStreamMode.Read);
+        }
+
+        /// <inheritdoc/>
+        public override byte[] GenerateArguments(object args)
+        {
+            var aes = Aes.Create();
+            aes.GenerateIV();
+            var iv = aes.IV;
+            var returnargs = new byte[iv.Length + 1];
+            int.TryParse((string)args, out int _arg);
+            var mode = (CipherMode)_arg;
+            returnargs[0] = (byte)mode;
+            for (int i = 0; i < iv.Length; i++)
+            {
+                returnargs[i + 1] = iv[i];
+            }
+            return returnargs;
         }
     }
 }
