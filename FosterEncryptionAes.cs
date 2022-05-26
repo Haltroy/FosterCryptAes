@@ -17,6 +17,9 @@ namespace LibFoster.Modules
         /// <inheritdoc/>
         public override bool RequiresPassword => true;
 
+        /// <inheritdoc</>
+        public override bool RequiresArguments => true;
+
         /// <inheritdoc />
         public override Stream GenerateEncryptStream(Stream inStream, byte[] arguments, byte[] password)
         {
